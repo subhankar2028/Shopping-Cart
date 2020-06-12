@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/home/">HOME</a></br>
+
+    <h2> Checkout Table </h2>
+
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Count</th>
+        </tr>
+
+        {% for product in productInCart %}
+        <tr>
+            <td>{{product}}</td>
+            <td>{{product.productCoast}}</td>
+            <td>{{product.count}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th>Total Coast</th>
+            <th>{{total}}</th>
+            <th></th>
+        </tr>
+
+
+
+    </table></br></br>
+
+    Enter Coupon : <input type="text" id="coupon" value="">
+    <button class="applyCoupon" id="btn" href="#">Add to cart</button></br></br></br>
+    <a id="discount"></a>
+
+    <form action="/home/" method="POST">
+        {% csrf_token %} 
+        <button type="submit" formaction="/cart/proceedCheckout/">Proceed to checkout</button>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    {% block scripts %}
+    <script type="text/javascript">
+        // $('#cartList').text("{{count_cart_list}}")
+        var token = '{{csrf_token}}';
+        $('.applyCoupon').click(function () {
+            var coupon;
+            var total = '{{total}}'
+            coupon = document.getElementById("coupon").value;
+            $.ajax(
+                {
+                    headers: { "X-CSRFToken": token },
+                    type: "POST",
+                    url: "/cart/applyCoupon/",
+                    data: {
+                        coupon: coupon,
+                        total: total,
+                    },
+                    success: function (data) {
+                        // $('#btn' + coupon).remove();
+                        $('#discount').text(data.after_deduction);
+                    }
+                })
+        }
+        );
+    </script>
+    {% endblock scripts %}
+
+
+
+</body>
+
+</html>

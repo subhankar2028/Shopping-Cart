@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Shopping cart</title>
+	<title>Bootstrap Example</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"></a>
+			</div>
+
+			<div id="leftThing" style="position: relative; width: 25%; float: left;">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/home/">Home</a></li>
+					<li class="active"><a href="/cart/logout/">LOG OUT</a></li>
+				</ul>
+			</div>
+
+
+			<div id="content" style="position: relative; width: 50%; float: left;">
+				<ul class="nav navbar-nav">
+					<!-- <li class="active"><a>User Name : {{username}}</a></li> -->
+				</ul>
+
+				<ul>
+
+					<div id="rightThing" style="position: relative; width: 25%; float: right;">
+						User Name : {{username}}
+						Cart : <a id="cartList"></a> Items
+						<div align="right">
+							<ul class="nav navbar-nav">
+								<form action="/cart/checkout/">
+									<input type="submit" value="Checkout Cart" />
+								</form>
+							</ul>
+						</div>
+					</div>
+
+				</ul>
+
+
+			</div>
+
+			
+
+
+
+			<!-- User Name : {{username}}
+			Cart : <a id="cartList"></a> Items</br>
+			<form action="/cart/checkout/">
+				<input type="submit" value="Checkout Cart" />
+			</form></br></br></br></br> -->
+		</div>
+	</nav>
+	<!-- 		
+	<form action="/cart/checkout/">
+		<input type="submit" value="Checkout Cart" />
+	</form></br></br></br></br> -->
+
+	{% for product in products %}
+	<img src="{{ MEDIA_URL }}{{product.productImage}}" alt="Image" width="200" height="200">
+	<h3>{{ forloop.counter }} {{ product.name }}</h3>
+	<p>{{ product.productDesc }} </p>
+	<button class="addToCart" id="btn{{product.id}}" href="#" data-catid="{{ product.id }}">Add to cart</button>
+	</br>
+	</br>
+	</br></br></br>
+	{% endfor %}
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	{% block scripts %}
+	<script type="text/javascript">
+		$('#cartList').text("{{count_cart_list}}")
+
+		$('.addToCart').click(function () {
+			var catid;
+			catid = $(this).attr("data-catid");
+			$.ajax(
+				{
+					type: "GET",
+					url: "/cart/ajaxReq/",
+					data: {
+						product_id: catid
+					},
+					success: function (data) {
+						// $('#btn' + catid).remove();
+						$('#cartList').text(data.count_cart_list);
+					}
+				})
+		}
+		);
+	</script>
+	{% endblock scripts %}
+
+</body>
+
+</html>
